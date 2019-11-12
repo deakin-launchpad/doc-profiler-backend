@@ -7,5 +7,6 @@ var DemoBaseRoute = require("./demoRoute/demoBaseRoute");
 var UserBaseRoute = require("./userRoute/userBaseRoute");
 var AdminBaseRoute = require("./adminRoute/adminBaseRoute");
 var UploadBaseRoute = require("./uploadRoute/uploadBaseRoute");
-var APIs = [].concat(DemoBaseRoute, UserBaseRoute, AdminBaseRoute, UploadBaseRoute);
+var DocumentBaseRoute = require("./documentRoute/documentBaseRoute");
+var APIs = [].concat(DemoBaseRoute, UserBaseRoute, AdminBaseRoute, UploadBaseRoute, DocumentBaseRoute);
 module.exports = APIs;

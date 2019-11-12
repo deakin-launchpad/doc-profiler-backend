@@ -213,6 +213,11 @@ var STATUS_MSG = {
       statusCode: 400,
       customMessage: "Inavlid email format",
       type: "INVALID_EMAIL_FORMAT"
+    },
+    NO_DOCUMENT_ACCESS: {
+      statusCode: 401,
+      customMessage: "You cannot access this document",
+      type: "NO_DOCUMENT_ACCESS"
     }
   },
   SUCCESS: {
@@ -245,7 +250,8 @@ var STATUS_MSG = {
       statusCode: 200,
       customMessage: "Password Reset Successfully",
       type: "PASSWORD_RESET"
-    }
+    },
+
   }
 };
 

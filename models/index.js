@@ -5,5 +5,6 @@
 module.exports = {
     User:require('./user'),
     ForgetPassword:require('./forgotPasswordRequest'),
-    Admin: require('./admin')
+    Admin: require('./admin'),
+    Document: require("./document")
 };
