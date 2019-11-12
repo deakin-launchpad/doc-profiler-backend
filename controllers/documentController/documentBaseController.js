@@ -160,11 +160,11 @@ var getDocumentsByUserId = function (userData, payloadData, callback) {
                     if (err) {
                         cb(err);
                     } else {
-                        if (data.length == 0) cb(ERROR.NOT_FOUND);
-                        else {
+                        // if (data.length == 0) cb();
+                        // else {
                             documentData = (data) || null;
                             cb();
-                        }
+                        // }
                     }
                 });
             }
