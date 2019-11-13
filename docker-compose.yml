@@ -1,0 +1,15 @@
+version: "2"
+services: 
+  app:
+    container_name: doc-profiler
+    restart: always
+    build: .
+    ports:
+      - "8000:8000"
+    links: 
+      - mongo
+  mongo:
+    container_name: mongo-doc-profiler
+    image: mongo
+    ports:
+    - "27017:27017"
