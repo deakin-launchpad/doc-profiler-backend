@@ -91,7 +91,8 @@ var getDocument = function (userData, payloadData, callback) {
             },
             function (cb) {
                 var criteria = {
-                    _id: payloadData.documentId
+                    _id: payloadData.documentId,
+                    status: true
                 };
                 var projection = {
 
@@ -150,7 +151,8 @@ var getDocumentsByUserId = function (userData, payloadData, callback) {
             },
             function (cb) {
                 var criteria = {
-                    userId: payloadData.userId
+                    userId: payloadData.userId,
+                    status: true
                 };
                 var projection = {
                     
