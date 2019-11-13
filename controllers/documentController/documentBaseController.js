@@ -152,7 +152,7 @@ var getDocumentsByUserId = function (userData, payloadData, callback) {
             function (cb) {
                 var criteria = {
                     userId: payloadData.userId,
-                    status: true
+                    active: true
                 };
                 var projection = {
                     
