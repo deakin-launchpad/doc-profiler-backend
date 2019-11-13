@@ -169,11 +169,70 @@ var getDocumentsByUserId = {
     }
 }
 
+var deleteDocument = {
+    method: "DELETE",
+    path: "/api/document/delete",
+    handler: function(request, h) {
+        var payloadData = request.payload;
+        var userData =
+                (request.auth &&
+                    request.auth.credentials &&
+                    request.auth.credentials.userData) ||
+                null;
+        return new Promise((resolve, reject) => {
+            if (userData && userData._id) {
+                    Controller.DocumentBaseController.deleteDocument(userData, payloadData, function (
+                        error,
+                        success
+                    ) {
+                        if (error) {
+                            reject(UniversalFunctions.sendError(error));
+                        } else {
+                            resolve(
+                                UniversalFunctions.sendSuccess(
+                                    UniversalFunctions.CONFIG.APP_CONSTANTS.STATUS_MSG.SUCCESS
+                                        .DEFAULT,
+                                    success
+                                )
+                            );
+                        }
+                    });
+                } else {
+                    reject(
+                        UniversalFunctions.sendError(
+                            UniversalFunctions.CONFIG.APP_CONSTANTS.STATUS_MSG.ERROR
+                                .INVALID_TOKEN
+                        )
+                    );
+                }
+            });
+    },
+    config: {
+        auth: "UserAuth",
+        description: "Delete documents for a user",
+        tags: ["api", "document"],
+        validate: {
+            headers: UniversalFunctions.authorizationHeaderObj,
+            payload: { 
+                userId: Joi.string(),
+                documentId: Joi.array().items(Joi.string()),
+            },
+            failAction: UniversalFunctions.failActionFunction
+        },
+        plugins: {
+            "hapi-swagger": {
+                responseMessages:
+                    UniversalFunctions.CONFIG.APP_CONSTANTS.swaggerDefaultResponseMessages
+            }
+        }
+    }
+}
+
 var DocumentBaseRoute = [
     createDocument,
     getDocument,
-    getDocumentsByUserId
+    getDocumentsByUserId,
     // updateDocument,
-    // deleteDocument
+    deleteDocument
 ];
 module.exports = DocumentBaseRoute;

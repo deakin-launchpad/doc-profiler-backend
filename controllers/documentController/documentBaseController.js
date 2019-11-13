@@ -176,10 +176,66 @@ var getDocumentsByUserId = function (userData, payloadData, callback) {
     );
 };
 
+var deleteDocument = function (userData, payloadData, callback) {
+    // var documentsFound = null;
+    async.series(
+        [
+            function (cb) {
+                var query = {
+                    _id: userData._id
+                };
+                var projection = {
+                    __v: 0,
+                    password: 0,
+                    accessToken: 0,
+                    codeUpdatedAt: 0
+                };
+                var options = { lean: true };
+                Service.AdminService.getAdmin(query, projection, options, function (
+                    err,
+                    data
+                ) {
+                    if (err) {
+                        cb(err);
+                    } else {
+                        if (data.length == 0) cb(ERROR.INCORRECT_ACCESSTOKEN);
+                        else {
+                            var adminData = (data && data[0]) || null;
+                            if (adminData.isBlocked) cb(ERROR.ACCOUNT_BLOCKED);
+                            else cb();
+                        }
+                    }
+                });
+            },
+            function (cb) {
+                var criteria = {
+                    userId: payloadData.userId,
+                    _id: { $in: payloadData.documentId }
+                };
+                var dataToSet = {
+                    active: false
+                };
+                var options = { lean: true };
+                Service.DocumentService.updateDocumentsList(criteria, dataToSet, options, function (err, data) {
+                    if (err) {
+                        cb(err);
+                    } else {
+                        cb();
+                    }
+                });
+            }
+        ],
+        function (err, result) {
+            if (err) callback(err);
+            else callback(null, { documentData: payloadData });
+        }
+    );
+};
+
 module.exports = {
     createDocument: createDocument,
     // updateDocument: updateDocument,
     getDocument: getDocument,
-    getDocumentsByUserId: getDocumentsByUserId
-    // deleteDocument: deleteDocument
+    getDocumentsByUserId: getDocumentsByUserId,
+    deleteDocument: deleteDocument
 };

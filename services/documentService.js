@@ -22,9 +22,14 @@ var deleteDocument = function (criteria, callback) {
     Models.Document.findOneAndRemove(criteria, callback);
 };
 
+var updateDocumentsList = function(criteria, dataToSet, options, callback) {
+    Models.Document.updateMany(criteria, dataToSet, options, callback);
+}
+
 module.exports = {
     createDocument: createDocument,
     updateDocument: updateDocument,
     getDocument: getDocument,
-    deleteDocument: deleteDocument
+    deleteDocument: deleteDocument,
+    updateDocumentsList: updateDocumentsList
 };

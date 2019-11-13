@@ -7,7 +7,8 @@ var document = new Schema({
     // title: { type: String, required: true },
     link: { type: String, required: true },
     isProcessed: { type: Boolean, default: false },
-    analysisReports: {type: [String], default: []}
+    analysisReports: {type: [String], default: []},
+    active: {type: Boolean, default: true}
 });
 
 module.exports = mongoose.model("document", document);
