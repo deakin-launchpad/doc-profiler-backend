@@ -7,5 +7,6 @@ module.exports = {
   UserBaseController: require("./userController/userBaseController"),
   AdminBaseController: require("./adminController/adminBaseController"),
   UploadBaseController: require("./uploadController/uploadBaseController"),
-  DocumentBaseController: require("./documentController/documentBaseController")
+  DocumentBaseController: require("./documentController/documentBaseController"),
+  ReportBaseController: require("./reportController/reportBaseController")
 };
