@@ -54,6 +54,9 @@ const nLUAnalysis = function (text, callback) {
             'concepts': {
                 limit: 3,
             },
+            'sentiment': {
+                limits: 3,
+            }
         },
     };
 

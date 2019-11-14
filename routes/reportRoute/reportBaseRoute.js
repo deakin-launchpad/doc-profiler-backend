@@ -4,13 +4,13 @@ var Joi = require("joi");
 var Config = require("../../config");
 
 const createReport = {
-    method: 'GET',
+    method: 'POST',
     path: '/api/report/create',
     config: {
-        description: 'Create a new document',
+        description: 'Create a new report',
         tags: ['api', 'report'],
         handler: function (request, h) {
-            const payloadData = request.query;
+            const payloadData = request.payload;
             return new Promise((resolve, reject) => {
                 Controller.ReportBaseController.createReport(payloadData.data, function (
                     err,
@@ -29,7 +29,7 @@ const createReport = {
             });
         },
         validate: {
-            query: {
+            payload: {
                 data: Joi.string().optional().allow(''),
             },
             failAction: UniversalFunctions.failActionFunction,
