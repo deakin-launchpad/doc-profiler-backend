@@ -60,11 +60,16 @@ var getAllGeneratedCodes = function(callback) {
   });
 };
 
+var updateUserList = function(criteria, dataToSet, options, callback) {
+  Models.User.updateMany(criteria, dataToSet, options, callback);
+}
+
 module.exports = {
   updateUser: updateUser,
   createUser: createUser,
   deleteUser: deleteUser,
   getUser: getUser,
   getAllGeneratedCodes: getAllGeneratedCodes,
-  getUserPromise: getUserPromise
+  getUserPromise: getUserPromise,
+  updateUserList: updateUserList
 };

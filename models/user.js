@@ -33,7 +33,8 @@ var user = new Schema({
   emailVerified: { type: Boolean, default: false },
   registrationDate: { type: Date, default: Date.now },
   codeUpdatedAt: { type: Date, default: Date.now, required: true },
-  isBlocked: {type: Boolean, default: false, required: true}
+  isBlocked: {type: Boolean, default: false, required: true},
+  active: {type: Boolean, default: true, required: true}
 });
 
 module.exports = mongoose.model("user", user);

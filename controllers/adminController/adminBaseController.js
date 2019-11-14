@@ -381,7 +381,7 @@ var getUser = function (userData, callback) {
         __v: 0,
         registrationDate: 0
       }
-      Service.UserService.getUser({}, projection, {}, function (err, data) {
+      Service.UserService.getUser({active: true}, projection, {}, function (err, data) {
         if (err) cb(err)
         else {
           userList = data;

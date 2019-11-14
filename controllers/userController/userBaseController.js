@@ -963,6 +963,62 @@ var resetPassword = function(payloadData, callbackRoute) {
   );
 };
 
+var deleteUser = function (userData, payloadData, callback) {
+  async.series(
+      [
+          function (cb) {
+              var query = {
+                  _id: userData._id
+              };
+              var projection = {
+                  __v: 0,
+                  password: 0,
+                  accessToken: 0,
+                  codeUpdatedAt: 0
+              };
+              var options = { lean: true };
+              Service.AdminService.getAdmin(query, projection, options, function (
+                  err,
+                  data
+              ) {
+                  if (err) {
+                      cb(err);
+                  } else {
+                      if (data.length == 0) cb(ERROR.INCORRECT_ACCESSTOKEN);
+                      else {
+                          var adminData = (data && data[0]) || null;
+                          if (adminData.isBlocked) cb(ERROR.ACCOUNT_BLOCKED);
+                          else cb();
+                      }
+                  }
+              });
+          },
+          function (cb) {
+            console.log("payloadData", payloadData);
+              var criteria = {
+                  _id: { $in: payloadData.userId }
+              };
+              var dataToSet = {
+                  active: false
+              };
+              var options = { lean: true };
+              Service.UserService.updateUserList(criteria, dataToSet, options, function (err, data) {
+                  if (err) {
+                      cb(err);
+                  } else {
+                    console.log("data");
+                      cb();
+                  }
+              });
+          }
+      ],
+      function (err, result) {
+          if (err) callback(err);
+          else callback(null, { userData: payloadData });
+      }
+  );
+};
+
 module.exports = {
   createUser: createUser,
   verifyOTP: verifyOTP,
@@ -974,5 +1030,6 @@ module.exports = {
   getProfile: getProfile,
   changePassword: changePassword,
   forgetPassword: forgetPassword,
-  resetPassword: resetPassword
+  resetPassword: resetPassword,
+  deleteUser: deleteUser
 };
