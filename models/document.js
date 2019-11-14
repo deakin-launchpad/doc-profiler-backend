@@ -8,7 +8,7 @@ var document = new Schema({
     link: { type: String, required: true },
     isProcessed: { type: Boolean, default: false },
     analysisReports: {type: [String], default: []},
-    active: {type: Boolean, default: true}
+    active: {type: Boolean, default: true, required: true}
 });
 
 module.exports = mongoose.model("document", document);
