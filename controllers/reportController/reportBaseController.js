@@ -48,15 +48,18 @@ const nLUAnalysis = function (text, callback) {
     const analyzeParams = {
         'text': text,
         'features': {
+            'sentiment': {
+                // limits: 3,
+            },
+            'emotion': {
+
+            },
             'categories': {
-                'limit': 3,
+                // 'limit': 3,
             },
             'concepts': {
-                limit: 3,
+                // limit: 3,
             },
-            'sentiment': {
-                limits: 3,
-            }
         },
     };
 
