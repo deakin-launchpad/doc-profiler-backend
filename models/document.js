@@ -6,8 +6,8 @@ var document = new Schema({
     userId: { type: Schema.Types.ObjectId, ref: "user" },
     // title: { type: String, required: true },
     link: { type: String, required: true },
-    isProcessed: { type: Boolean, default: false },
-    analysisReports: {type: [String], default: []},
+    isProcessed: { type: String, default: "PROCESSING" },
+    analysisReports: {type: Object, default: {}},
     active: {type: Boolean, default: true, required: true}
 });
 
