@@ -1,7 +1,6 @@
 var UniversalFunctions = require("../../utils/universalFunctions");
 var Controller = require("../../controllers");
 var Joi = require("joi");
-var Config = require("../../config");
 
 var createDocument = {
     method: "POST",
@@ -228,11 +227,62 @@ var deleteDocument = {
     }
 }
 
+var retryDocumentAnalysis = {
+    method: "POST",
+    path: "/api/document/retryAnalysis",
+    handler: function (request, h) {
+        var userData =
+            (request.auth &&
+                request.auth.credentials &&
+                request.auth.credentials.userData) ||
+            null;
+        var payloadData = request.payload;
+        return new Promise((resolve, reject) => {
+            Controller.DocumentBaseController.retryDocumentAnalysis(userData, payloadData, function (
+                error,
+                success
+            ) {
+                if (error) {
+                    reject(UniversalFunctions.sendError(error));
+                } else {
+                    resolve(
+                        UniversalFunctions.sendSuccess(
+                            UniversalFunctions.CONFIG.APP_CONSTANTS.STATUS_MSG.SUCCESS
+                                .DEFAULT,
+                            success
+                        )
+                    );
+                }
+            })
+        });
+    },
+    config: {
+        description: "Retry document analysis",
+        tags: ["api", "document"],
+        auth: "UserAuth",
+        validate: {
+            headers: UniversalFunctions.authorizationHeaderObj,
+            payload: {
+                userId: Joi.string().required(),
+                documentId: Joi.string().required()
+            },
+            failAction: UniversalFunctions.failActionFunction
+        },
+        plugins: {
+            "hapi-swagger": {
+                responseMessages:
+                    UniversalFunctions.CONFIG.APP_CONSTANTS.swaggerDefaultResponseMessages
+            }
+        }
+    }
+};
+
 var DocumentBaseRoute = [
     createDocument,
     getDocument,
     getDocumentsByUserId,
     // updateDocument,
-    deleteDocument
+    deleteDocument,
+    retryDocumentAnalysis
 ];
 module.exports = DocumentBaseRoute;
