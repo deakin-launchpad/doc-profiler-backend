@@ -9,6 +9,7 @@ var user = new Schema({
   firstName: { type: String, trim: true, required: true },
   lastName: { type: String, trim: true, required: true },
   emailId: { type: String, trim: true, required: true, unique: true },
+  isAnonymous: { type: Boolean, required: true, default: false },
   accessToken: {
     type: String,
     trim: true,

@@ -262,7 +262,8 @@ var createUser = {
         countryCode: Joi.string()
           .max(4)
           .required()
-          .trim()
+          .trim(),
+        isAnonymous: Joi.boolean()
       },
       failAction: UniversalFunctions.failActionFunction
     },
