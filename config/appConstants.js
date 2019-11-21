@@ -218,6 +218,11 @@ var STATUS_MSG = {
       statusCode: 401,
       customMessage: "You cannot access this document",
       type: "NO_DOCUMENT_ACCESS"
+    },
+    DOCUMENT_ALREADY_PROCESSED: {
+      statusCode: 409,
+      customMessage: "This document has already been processed. Please reload the page.",
+      type: "DOCUMENT_ALREADY_PROCESSED"
     }
   },
   SUCCESS: {

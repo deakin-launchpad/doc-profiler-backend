@@ -283,6 +283,28 @@ var retryDocumentAnalysis = function (userData, payloadData, callback) {
                     _id: payloadData.documentId,
                     userId: payloadData.userId
                 };
+                var projection = {
+                };
+                var options = { lean: true };
+                Service.DocumentService.getDocument(criteria, projection, options, function (err, data) {
+                    if (err) {
+                        cb(err);
+                    } else {
+                        // if (data.length == 0) cb();
+                        // else {
+                        if (data[0].isProcessed === "PROCESSED")
+                            cb(ERROR.DOCUMENT_ALREADY_PROCESSED)
+                        // documentData = (data) || null;
+                        else cb();
+                        // }
+                    }
+                });
+            },
+            function (cb) {
+                var criteria = {
+                    _id: payloadData.documentId,
+                    userId: payloadData.userId
+                };
                 var dataToSet = {
                     isProcessed: "PROCESSING"
                 };
