@@ -11,6 +11,7 @@ var Path = require('path');
 var pdfreader = require("pdfreader");
 var uploadManager = require("../../lib/uploadManager");
 var mammoth = require("mammoth");
+var redisClient = require("../../Utils/redisConnect").redisClient;
 
 var ibms3Config = {
     endpoint: CONFIG.AWS_S3_CONFIG.s3BucketCredentials.endpoint,
@@ -59,7 +60,7 @@ var createDocument = function (userData, payloadData, callback) {
                         cb(err);
                     } else {
                         if (data !== null || data !== undefined) {
-                            analyseDocument(data);
+                            analyseDocument(data, userData);
                         }
                         cb();
                     }
@@ -318,6 +319,17 @@ var retryDocumentAnalysis = function (userData, payloadData, callback) {
                 });
             },
             function (cb) {
+                redisClient.hgetall(userData._id.toString(), function (err, obj) {
+                    if (obj && obj.socketId) {
+                        process.emit("refreshContent", {
+                            socketId: obj.socketId
+                        });
+                        cb()
+                    }
+                    else cb(err)
+                })
+            },
+            function (cb) {
                 var criteria = {
                     userId: payloadData.userId,
                     _id: payloadData.documentId
@@ -331,7 +343,7 @@ var retryDocumentAnalysis = function (userData, payloadData, callback) {
                     } else {
                         if (data === null || data === undefined) cb(ERROR.NOT_FOUND);
                         else {
-                            analyseDocument(data && data[0]);
+                            analyseDocument(data && data[0], userData);
                             cb();
                         }
                     }
@@ -345,7 +357,7 @@ var retryDocumentAnalysis = function (userData, payloadData, callback) {
     );
 };
 
-var analyseDocument = function (documentData) {
+var analyseDocument = function (documentData, userData) {
     var dataForWatson = "";
     var dataFromWatson = "";
     var obj;
@@ -454,6 +466,15 @@ var analyseDocument = function (documentData) {
                             isProcessed: "ERROR",
                         };
                         var options = { lean: true };
+                        redisClient.hgetall(userData._id.toString(), function (err, obj) {
+                            if (obj && obj.socketId) {
+                                process.emit("refreshContentForError", {
+                                    socketId: obj.socketId
+                                });
+                                // cb()
+                            }
+                            // else cb(err)
+                        })
                         Service.DocumentService.updateDocumentsList(criteria, dataToSet, options, function (error, data) {
                             if (error) {
                                 cb(error);
@@ -462,6 +483,15 @@ var analyseDocument = function (documentData) {
                             }
                         });
                     } else {
+                        redisClient.hgetall(userData._id.toString(), function (err, obj) {
+                            if (obj && obj.socketId) {
+                                process.emit("refreshContent", {
+                                    socketId: obj.socketId
+                                });
+                                // cb()
+                            }
+                            // else cb(err)
+                        })
                         dataFromWatson = response.body;
                         console.log("-----------dataWatson----------", dataFromWatson);
                         cb();
@@ -495,6 +525,15 @@ var analyseDocument = function (documentData) {
                     analysisReports: obj
                 };
                 var options = { lean: true };
+                redisClient.hgetall(userData._id.toString(), function (err, obj) {
+                    if (obj && obj.socketId) {
+                        process.emit("refreshContent", {
+                            socketId: obj.socketId
+                        });
+                        // cb()
+                    }
+                    // else cb(err)
+                })
                 Service.DocumentService.updateDocumentsList(criteria, dataToSet, options, function (err, data) {
                     if (err) {
                         cb(err);
