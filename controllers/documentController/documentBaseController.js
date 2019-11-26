@@ -11,7 +11,7 @@ var Path = require('path');
 var pdfreader = require("pdfreader");
 var uploadManager = require("../../lib/uploadManager");
 var mammoth = require("mammoth");
-var redisClient = require("../../Utils/redisConnect").redisClient;
+var redisClient = require("../../utils/redisConnect").redisClient;
 
 var ibms3Config = {
     endpoint: CONFIG.AWS_S3_CONFIG.s3BucketCredentials.endpoint,
