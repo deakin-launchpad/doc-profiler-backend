@@ -500,21 +500,54 @@ var analyseDocument = function (documentData, userData) {
             },
             function (cb) {
                 var data = JSON.parse(dataFromWatson).data;
-                if (data.nLUAnalysis === undefined) {
+                if (data.nLUAnalysis === undefined && data.personality_Insights === undefined) {
                     obj = null;
                     cb();
-                }
-                var nlu = data.nLUAnalysis.testData;
-                var tone = data.tone_analysis;
-                obj = {
-                    nluAnalysis: {
-                        categories: nlu.categories,
-                        concepts: nlu.concepts,
-                        emotion: nlu.emotion.document.emotion,
-                        sentiment: nlu.sentiment.document
+                } else if (data.nLUAnalysis !== undefined && data.personality_Insights === undefined) {
+                    var nlu = data.nLUAnalysis.testData;
+                    obj = {
+                        nluAnalysis: {
+                            categories: nlu.categories,
+                            concepts: nlu.concepts,
+                            emotion: nlu.emotion.document.emotion,
+                            sentiment: nlu.sentiment.document
+                        }
                     }
+                    cb();
+                } else if (data.nLUAnalysis === undefined && data.personality_Insights !== undefined) {
+                    var personalityInsightsSummary = data.personality_Insights.summary;
+                    var personalityInsights = data.personality_Insights.testData;
+                    obj = {
+                        personality_Insights: {
+                            summary: personalityInsightsSummary,
+                            needs: personalityInsights.needs,
+                            personality: personalityInsights.personality,
+                            values: personalityInsights.values,
+                            warnings: personalityInsights.warnings
+                        }
+                    }
+                    cb();
+                } else {
+                    var nlu = data.nLUAnalysis.testData;
+                    var personalityInsightsSummary = data.personality_Insights.summary;
+                    var personalityInsights = data.personality_Insights.testData;
+                    obj = {
+                        nluAnalysis: {
+                            categories: nlu.categories,
+                            concepts: nlu.concepts,
+                            emotion: nlu.emotion.document.emotion,
+                            sentiment: nlu.sentiment.document
+                        },
+                        personalityInsights: {
+                            summary: personalityInsightsSummary,
+                            needs: personalityInsights.needs,
+                            personality: personalityInsights.personality,
+                            values: personalityInsights.values,
+                            warnings: personalityInsights.warnings,
+                        }
+                    }
+                    cb();
                 }
-                cb();
             },
             function (cb) {
                 var criteria = {

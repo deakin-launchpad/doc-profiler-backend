@@ -5,7 +5,12 @@ const ERROR = UniversalFunctions.CONFIG.APP_CONSTANTS.STATUS_MSG.ERROR;
 // eslint-disable-next-line max-len
 const NaturalLanguageUnderstandingV1 = require('ibm-watson/natural-language-understanding/v1');
 const ToneAnalyzerV3 = require('ibm-watson/tone-analyzer/v3');
-const Service = require('../../services');
+const PersonalInsights = require('ibm-watson/personality-insights/v3');
+const PersonalityTextSummaries = require('personality-text-summary');
+const v3EnglishTextSummaries = new PersonalityTextSummaries({
+    locale: 'en',
+    version: 'v3'
+});
 
 const naturalLanguageUnderstanding = new NaturalLanguageUnderstandingV1({
     version: '2019-07-12',
@@ -16,6 +21,12 @@ const toneAnalyzer = new ToneAnalyzerV3({
     version: '2016-05-19',
     iam_apikey: '-K7Vos3Es3H15ovZ57TyzA7Z1S62uGV869O241qEt9_P',
     url: 'https://gateway-syd.watsonplatform.net/tone-analyzer/api',
+});
+
+const personalityInsights = new PersonalInsights({
+    version: '2016-05-19',
+    iam_apikey: 'MKqkdTZ4TbBP-oMWZSGhDZNSmbGs47jNNlbgn-RGAI7Y',
+    url: 'https://gateway.watsonplatform.net/personality-insights/api'
 });
 
 // const dbUrl = 'mongodb://solankip:unimelb3595@ds151997.mlab.com:51997/launchpad'
@@ -72,6 +83,37 @@ const nLUAnalysis = function (text, callback) {
     });
 };
 
+const personalityInsightsAnalysis = (text, callback) => {
+    let testData;
+
+    let params = {
+        content: text,
+        content_type: 'text/plain',
+        raw_scores: true,
+        consumption_preferences: true
+    };
+
+    personalityInsights.profile(params, function (error, data) {
+        if (error)
+            callback(error);
+        else {
+            testData = data;
+            var summary = getTextSummary(data);
+            callback(null, { testData: testData, summary: summary });
+        }
+            // console.log(JSON.stringify(response, null, 2));
+    }
+    );
+}
+
+const getTextSummary = personalityProfile => {
+    let textSummary = v3EnglishTextSummaries.getSummary(personalityProfile);
+    if (typeof (textSummary) !== 'string') {
+        console.log("Could not get summary.");
+    } else {
+        return textSummary;
+    }
+};
 
 const createReport = function (payloadData, callback) {
     async.parallel({
@@ -88,6 +130,12 @@ const createReport = function (payloadData, callback) {
         //     }
         //   });
         // },
+        personality_Insights: function (cb) {
+            personalityInsightsAnalysis(payloadData, (err, data) => {
+                if (err) cb(err);
+                else cb(null, data);
+            });
+        },
         tone_analysis: function (cb) {
             toneAnalysis(payloadData, function (err, data) {
                 cb(null, data);
