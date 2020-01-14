@@ -43,7 +43,49 @@ const createReport = {
     },
 };
 
+const sentenceAnalysis = {
+  method: 'POST',
+  path: '/api/report/sentenceAnalysis',
+  config: {
+      description: 'Sentence Analysis',
+      tags: ['api', 'report'],
+      handler: function (request, h) {
+          const payloadData = request.payload;
+          return new Promise((resolve, reject) => {
+              Controller.ReportBaseController.sentenceAnalysis(payloadData, function (
+                  err,
+                  data
+              ) {
+                  if (err) reject(UniversalFunctions.sendError(err));
+                  else {
+                      resolve(
+                          UniversalFunctions.sendSuccess(
+                              Config.APP_CONSTANTS.STATUS_MSG.SUCCESS.DEFAULT,
+                              data
+                          )
+                      );
+                  }
+              });
+          });
+      },
+      validate: {
+          payload: {
+              data: Joi.string().optional().allow(''),
+              url: Joi.string().optional().allow('')
+          },
+          failAction: UniversalFunctions.failActionFunction,
+      },
+      plugins: {
+          'hapi-swagger': {
+              responseMessages:
+                  UniversalFunctions.CONFIG.APP_CONSTANTS.swaggerDefaultResponseMessages,
+          },
+      },
+  },
+};
+
 var ReportBaseRoute = [
-    createReport
+    createReport,
+    sentenceAnalysis
 ];
 module.exports = ReportBaseRoute;
