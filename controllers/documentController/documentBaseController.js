@@ -379,7 +379,7 @@ var analyseDocument = function (documentData, userData) {
             if (err) {
               console.log(err);
             } else {
-              console.log("---------data----------");
+              // console.log("---------data----------");
               fileName = url.substring(url.lastIndexOf('/') + 1);
               fs.appendFile(path + fileName, new Buffer(data.Body.buffer), function (err) {
                 if (err) {
@@ -391,8 +391,7 @@ var analyseDocument = function (documentData, userData) {
                       html.replace(/<[^>]*>?/gm, '');
                       var messages = result.messages; // Any messages, such as warnings during conversion
                       dataForWatson = html.replace(/<[^>]*>?/gm, '');
-                      console.log(dataForWatson);
-
+                      // console.log(dataForWatson);
                     })
                     .done(function () {
                       uploadManager.deleteFile(path + fileName, cb);
@@ -406,9 +405,9 @@ var analyseDocument = function (documentData, userData) {
             if (err) {
               console.log(err);
             } else {
-              console.log("---------data----------");
+              // console.log("---------data----------");
               dataForWatson = data.Body.toString();
-              console.log(dataForWatson);
+              // console.log(dataForWatson);
               cb();
             }
           });
@@ -418,7 +417,7 @@ var analyseDocument = function (documentData, userData) {
             if (err) {
               console.log(err);
             } else {
-              console.log("---------data----------");
+              // console.log("---------data----------");
 
               fileName = url.substring(url.lastIndexOf('/') + 1);
               fs.appendFile(path + fileName, new Buffer(data.Body.buffer), function (err) {
@@ -453,7 +452,7 @@ var analyseDocument = function (documentData, userData) {
         }
       },
       function (cb) {
-        console.log("-----------dataForWatson----------", dataForWatson);
+        // console.log("-----------dataForWatson----------", dataForWatson);
         let formDATA = {
           "data": dataForWatson
         };
@@ -493,7 +492,7 @@ var analyseDocument = function (documentData, userData) {
               // else cb(err)
             })
             dataFromWatson = response.body;
-            console.log("-----------dataWatson----------", dataFromWatson);
+            // console.log("-----------dataWatson----------", dataFromWatson);
             cb();
           }
         });
