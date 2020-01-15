@@ -504,24 +504,87 @@ var analyseDocument = function (documentData, userData) {
         }
         if (data.nLUAnalysis !== undefined) {
           var nlu = data.nLUAnalysis.testData;
+          var categories = [];
+          var concepts = [];
+          var emotion = {};
+          var sentiment = {};
+          if (nlu.categories !== undefined && nlu.categories !== null && nlu.categories.length > 0) {
+            nlu.categories.map((item) => {
+              categories.push({
+                score: Math.round(item.score * 100),
+                label: item.label
+              });
+              return categories;
+            });
+          }
+          if (nlu.concepts !== undefined && nlu.concepts !== null && nlu.concepts.length > 0) {
+            nlu.concepts.map((item) => {
+              concepts.push({
+                relevance: Math.round(item.relevance * 100),
+                text: item.text
+              });
+              return concepts;
+            });
+          }
+          if (nlu.emotion !== undefined && nlu.emotion !== null && Object.keys(nlu.emotion.document.emotion).length > 0) {
+            Object.keys(nlu.emotion.document.emotion).map((value) => {
+              emotion[value] = Math.round(nlu.emotion.document.emotion[value] * 100);
+            });
+          }
+          if (nlu.sentiment !== undefined && nlu.sentiment !== null && Object.keys(nlu.sentiment.document).length > 0) {
+            sentiment.label = nlu.sentiment.document.label;
+            sentiment.score = Math.round(nlu.sentiment.document.score * 100) / 100;
+          }
           obj.nluAnalysis = {
-            categories: nlu.categories,
-            concepts: nlu.concepts,
-            emotion: nlu.emotion.document.emotion,
-            sentiment: nlu.sentiment.document
+            categories: categories,
+            concepts: concepts,
+            emotion: emotion,
+            sentiment: sentiment
           }
         }
+
         if (data.personality_Insights !== undefined) {
           var personalityInsightsSummary = data.personality_Insights.summary;
           var personalityInsights = data.personality_Insights.testData;
+          var needs = [];
+          var personality = [];
+          var values = [];
+          if (personalityInsights.needs !== undefined && personalityInsights.needs !== null && personalityInsights.needs.length > 0) {
+            personalityInsights.needs.map((item) => {
+              needs.push({
+                name: item.name,
+                percentile: Math.round(item.percentile * 100)
+              });
+              return needs;
+            });
+          }
+          if (personalityInsights.personality !== undefined && personalityInsights.personality !== null && personalityInsights.personality.length > 0) {
+            personalityInsights.personality.map((item) => {
+              personality.push({
+                name: item.name,
+                percentile: Math.round(item.percentile * 100)
+              });
+              return personality;
+            });
+          }
+          if (personalityInsights.values !== undefined && personalityInsights.values !== null && personalityInsights.values.length > 0) {
+            personalityInsights.values.map((item) => {
+              values.push({
+                name: item.name,
+                percentile: Math.round(item.percentile * 100)
+              });
+              return values;
+            });
+          }
           obj.personality_Insights = {
             summary: personalityInsightsSummary,
-            needs: personalityInsights.needs,
-            personality: personalityInsights.personality,
-            values: personalityInsights.values,
+            needs: needs,
+            personality: personality,
+            values: values,
             warnings: personalityInsights.warnings
           }
         }
+        
         if (data.classifier_tags !==  undefined) {
           obj.classifiers = data.classifier_tags
         }
