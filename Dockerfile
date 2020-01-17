@@ -8,7 +8,7 @@ RUN apk add --update graphicsmagick
 
 RUN apk add --update bash
 
-WORKDIR /app/refugee-backend
+WORKDIR /app
 
 COPY . .
 
