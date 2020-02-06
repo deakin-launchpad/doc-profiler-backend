@@ -169,6 +169,11 @@ var STATUS_MSG = {
       customMessage: "User Not Found",
       type: "NOT_FOUND"
     },
+    NO_DOCUMENTS_FOUND: {
+      statusCode: 400,
+      customMessage: "No documents found",
+      type: "NO_DOCUMENTS_FOUND"
+    },
     WRONG_PASSWORD: {
       statusCode: 400,
       customMessage: "Invalid old password",

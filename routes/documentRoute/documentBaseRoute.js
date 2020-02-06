@@ -168,6 +168,118 @@ var getDocumentsByUserId = {
     }
 }
 
+var getDocumentsData = {
+  method: "GET",
+  path: "/api/document/getDocumentsData",
+  config: {
+      description: "Get documents data for csv.",
+      auth: "UserAuth",
+      tags: ["api", "document"],
+      handler: function (request, h) {
+          var userData =
+              (request.auth &&
+                  request.auth.credentials &&
+                  request.auth.credentials.userData) ||
+              null;
+          return new Promise((resolve, reject) => {
+              if (userData && userData._id) {
+                  Controller.DocumentBaseController.getDocumentsData(userData, function (
+                      error,
+                      success
+                  ) {
+                      if (error) {
+                          reject(UniversalFunctions.sendError(error));
+                      } else {
+                          resolve(
+                              UniversalFunctions.sendSuccess(
+                                  UniversalFunctions.CONFIG.APP_CONSTANTS.STATUS_MSG.SUCCESS
+                                      .DEFAULT,
+                                  success
+                              )
+                          );
+                      }
+                  });
+              } else {
+                  reject(
+                      UniversalFunctions.sendError(
+                          UniversalFunctions.CONFIG.APP_CONSTANTS.STATUS_MSG.ERROR
+                              .INVALID_TOKEN
+                      )
+                  );
+              }
+          });
+      },
+      validate: {
+          headers: UniversalFunctions.authorizationHeaderObj,
+          failAction: UniversalFunctions.failActionFunction
+      },
+      plugins: {
+          "hapi-swagger": {
+              responseMessages:
+                  UniversalFunctions.CONFIG.APP_CONSTANTS.swaggerDefaultResponseMessages
+          }
+      }
+  }
+}
+
+var getDocumentsDataByUserId = {
+  method: "GET",
+  path: "/api/document/getDocumentsDataByUserId",
+  config: {
+      description: "Get documents for a user",
+      auth: "UserAuth",
+      tags: ["api", "document"],
+      handler: function (request, h) {
+          var userData =
+              (request.auth &&
+                  request.auth.credentials &&
+                  request.auth.credentials.userData) ||
+              null;
+          var payloadData = request.query;
+          return new Promise((resolve, reject) => {
+              if (userData && userData._id) {
+                  Controller.DocumentBaseController.getDocumentsDataByUserId(userData, payloadData, function (
+                      error,
+                      success
+                  ) {
+                      if (error) {
+                          reject(UniversalFunctions.sendError(error));
+                      } else {
+                          resolve(
+                              UniversalFunctions.sendSuccess(
+                                  UniversalFunctions.CONFIG.APP_CONSTANTS.STATUS_MSG.SUCCESS
+                                      .DEFAULT,
+                                  success
+                              )
+                          );
+                      }
+                  });
+              } else {
+                  reject(
+                      UniversalFunctions.sendError(
+                          UniversalFunctions.CONFIG.APP_CONSTANTS.STATUS_MSG.ERROR
+                              .INVALID_TOKEN
+                      )
+                  );
+              }
+          });
+      },
+      validate: {
+          headers: UniversalFunctions.authorizationHeaderObj,
+          failAction: UniversalFunctions.failActionFunction,
+          query: {
+              userId: Joi.string().required()
+          },
+      },
+      plugins: {
+          "hapi-swagger": {
+              responseMessages:
+                  UniversalFunctions.CONFIG.APP_CONSTANTS.swaggerDefaultResponseMessages
+          }
+      }
+  }
+}
+
 var deleteDocument = {
     method: "DELETE",
     path: "/api/document/delete",
@@ -277,10 +389,14 @@ var retryDocumentAnalysis = {
     }
 };
 
+
+
 var DocumentBaseRoute = [
     createDocument,
     getDocument,
     getDocumentsByUserId,
+    getDocumentsData,
+    getDocumentsDataByUserId,
     // updateDocument,
     deleteDocument,
     retryDocumentAnalysis
