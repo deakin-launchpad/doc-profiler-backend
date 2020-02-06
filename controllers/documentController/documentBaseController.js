@@ -186,70 +186,74 @@ var getDocumentsData = function (userData, callback) {
               temp = [];
               if (data.length > 0) {
                 data.forEach((item) => {
-                  let concepts = '';
-                  for (let i = 0; i < item.analysisReports.nluAnalysis.concepts.length - 2; i++) {
-                    concepts += item.analysisReports.nluAnalysis.concepts[i].text + ', ';
-                  }
-                  concepts += item.analysisReports.nluAnalysis.concepts[item.analysisReports.nluAnalysis.concepts.length - 1].text;
-                  let clientSupNeg = _.findWhere(item.analysisReports.classifiers, { class_name: 'Client Supervisor Negative' });
-                  let clientSupPos = _.findWhere(item.analysisReports.classifiers, { class_name: 'Client Supervisor Positive' });
-                  let taskMgmtPos = _.findWhere(item.analysisReports.classifiers, { class_name: 'Task Mgmt Positive' });
-                  let taskMgmtNeg = _.findWhere(item.analysisReports.classifiers, { class_name: 'Task Mgmt Negative' });
-                  let teamMgmtNeg = _.findWhere(item.analysisReports.classifiers, { class_name: 'Team Mgmt Negative' });
-                  let teamMgmtPos = _.findWhere(item.analysisReports.classifiers, { class_name: 'Team Mgmt Positive' });
-                  let selfMgmtNeg = _.findWhere(item.analysisReports.classifiers, { class_name: 'Self Mgmt Negative' });
-                  let selfMgmtPos = _.findWhere(item.analysisReports.classifiers, { class_name: 'Self Mgmt Positive' });
-                  let commNeg = _.findWhere(item.analysisReports.classifiers, { class_name: 'Communication Negative' });
-                  let commPos = _.findWhere(item.analysisReports.classifiers, { class_name: 'Communication Positive' });
-                  let learnNeg = _.findWhere(item.analysisReports.classifiers, { class_name: 'Learning Negative' });
-                  let learnPos = _.findWhere(item.analysisReports.classifiers, { class_name: 'Learning Positive' });
-                  let overNeg = _.findWhere(item.analysisReports.classifiers, { class_name: 'Overall Negative' });
-                  let overPos = _.findWhere(item.analysisReports.classifiers, { class_name: 'Overall Positive' });
-                  let emotionNeg = _.findWhere(item.analysisReports.classifiers, { class_name: 'Emotions Negative' });
-                  let emotionPos = _.findWhere(item.analysisReports.classifiers, { class_name: 'Emotions Positive' });
-                  let org = _.findWhere(item.analysisReports.classifiers, { class_name: 'Organizer' });
-                  let doer = _.findWhere(item.analysisReports.classifiers, { class_name: 'Doer' });
-                  let leader = _.findWhere(item.analysisReports.classifiers, { class_name: 'Leader' });
-                  let supporter = _.findWhere(item.analysisReports.classifiers, { class_name: 'Supporter' });
+                  if (item.analysisReports !== undefined && item.analysisReports !== null) {
+                    let concepts = '';
+                    if (item.analysisReports.nluAnalysis !== undefined) {
+                      for (let i = 0; i < item.analysisReports.nluAnalysis.concepts.length - 2; i++) {
+                        concepts += item.analysisReports.nluAnalysis.concepts[i].text + ', ';
+                      }
+                      concepts += item.analysisReports.nluAnalysis.concepts[item.analysisReports.nluAnalysis.concepts.length - 1].text;
+                    }
+                    let clientSupNeg = _.findWhere(item.analysisReports.classifiers, { class_name: 'Client Supervisor Negative' });
+                    let clientSupPos = _.findWhere(item.analysisReports.classifiers, { class_name: 'Client Supervisor Positive' });
+                    let taskMgmtPos = _.findWhere(item.analysisReports.classifiers, { class_name: 'Task Mgmt Positive' });
+                    let taskMgmtNeg = _.findWhere(item.analysisReports.classifiers, { class_name: 'Task Mgmt Negative' });
+                    let teamMgmtNeg = _.findWhere(item.analysisReports.classifiers, { class_name: 'Team Mgmt Negative' });
+                    let teamMgmtPos = _.findWhere(item.analysisReports.classifiers, { class_name: 'Team Mgmt Positive' });
+                    let selfMgmtNeg = _.findWhere(item.analysisReports.classifiers, { class_name: 'Self Mgmt Negative' });
+                    let selfMgmtPos = _.findWhere(item.analysisReports.classifiers, { class_name: 'Self Mgmt Positive' });
+                    let commNeg = _.findWhere(item.analysisReports.classifiers, { class_name: 'Communication Negative' });
+                    let commPos = _.findWhere(item.analysisReports.classifiers, { class_name: 'Communication Positive' });
+                    let learnNeg = _.findWhere(item.analysisReports.classifiers, { class_name: 'Learning Negative' });
+                    let learnPos = _.findWhere(item.analysisReports.classifiers, { class_name: 'Learning Positive' });
+                    let overNeg = _.findWhere(item.analysisReports.classifiers, { class_name: 'Overall Negative' });
+                    let overPos = _.findWhere(item.analysisReports.classifiers, { class_name: 'Overall Positive' });
+                    let emotionNeg = _.findWhere(item.analysisReports.classifiers, { class_name: 'Emotions Negative' });
+                    let emotionPos = _.findWhere(item.analysisReports.classifiers, { class_name: 'Emotions Positive' });
+                    let org = _.findWhere(item.analysisReports.classifiers, { class_name: 'Organizer' });
+                    let doer = _.findWhere(item.analysisReports.classifiers, { class_name: 'Doer' });
+                    let leader = _.findWhere(item.analysisReports.classifiers, { class_name: 'Leader' });
+                    let supporter = _.findWhere(item.analysisReports.classifiers, { class_name: 'Supporter' });
 
-                  temp.push({
-                    docId: item._id,
-                    userId: item.userId,
-                    downloadLink: item.link,
-                    sentiment: item.analysisReports.nluAnalysis.sentiment.label,
-                    sentiment_score: item.analysisReports.nluAnalysis.sentiment.score,
-                    'emotion_sadness (%)': item.analysisReports.nluAnalysis.emotion.sadness,
-                    'emotion_joy (%)': item.analysisReports.nluAnalysis.emotion.joy,
-                    'emotion_fear (%)': item.analysisReports.nluAnalysis.emotion.fear,
-                    'emotion_disgust (%)': item.analysisReports.nluAnalysis.emotion.disgust,
-                    'emotion_anger (%)': item.analysisReports.nluAnalysis.emotion.anger,
-                    concepts: concepts,
-                    personality_summary: item.analysisReports.personality_Insights.summary,
-                    'personality_opennness (%)': item.analysisReports.personality_Insights.personality[0].percentile,
-                    'personality_conscientiousness (%)': item.analysisReports.personality_Insights.personality[1].percentile,
-                    'personality_Agreeableness (%)': item.analysisReports.personality_Insights.personality[3].percentile,
-                    'personality_emotional_range (%)': item.analysisReports.personality_Insights.personality[4].percentile,
-                    'Client Supervisor Negative (%)': clientSupNeg !== undefined ? clientSupNeg.average_confidence : 0,
-                    'Client Supervisor Positive (%)': clientSupPos !== undefined ? clientSupPos.average_confidence : 0,
-                    'Task Mgmt Positive (%)': taskMgmtPos !== undefined ? taskMgmtPos.average_confidence : 0,
-                    'Task Mgmt Negative (%)': taskMgmtNeg !== undefined ? taskMgmtNeg.average_confidence : 0,
-                    'Team Mgmt Negative (%)': teamMgmtNeg !== undefined ? teamMgmtNeg.average_confidence : 0,
-                    'Team Mgmt Positive (%)': teamMgmtPos !== undefined ? teamMgmtPos.average_confidence : 0,
-                    'Self Mgmt Negative (%)': selfMgmtNeg !== undefined ? selfMgmtNeg.average_confidence : 0,
-                    'Self Mgmt Positive (%)': selfMgmtPos !== undefined ? selfMgmtPos.average_confidence : 0,
-                    'Communication Negative (%)': commNeg !== undefined ? commNeg.average_confidence : 0,
-                    'Communication Positive (%)': commPos !== undefined ? commPos.average_confidence : 0,
-                    'Learning Negative (%)': learnNeg !== undefined ? learnNeg.average_confidence : 0,
-                    'Learning Positive (%)': learnPos !== undefined ? learnPos.average_confidence : 0,
-                    'Overall Negative (%)': overNeg !== undefined ? overNeg.average_confidence : 0,
-                    'Overall Positive (%)': overPos !== undefined ? overPos.average_confidence : 0,
-                    'Emotions Negative (%)': emotionNeg !== undefined ? emotionNeg.average_confidence : 0,
-                    'Emotions Positive (%)': emotionPos !== undefined ? emotionPos.average_confidence : 0,
-                    'Organizer (%)': org !== undefined ? org.average_confidence : 0,
-                    'Doer (%)': doer !== undefined ? doer.average_confidence : 0,
-                    'Leader (%)': leader !== undefined ? leader.average_confidence : 0,
-                    'Supporter (%)': supporter !== undefined ? supporter.average_confidence : 0
-                  });
+                    temp.push({
+                      docId: item._id,
+                      userId: item.userId,
+                      downloadLink: item.link,
+                      sentiment: item.analysisReports.nluAnalysis !== undefined ? item.analysisReports.nluAnalysis.sentiment.label : '',
+                      sentiment_score: item.analysisReports.nluAnalysis !== undefined ? item.analysisReports.nluAnalysis.sentiment.score : '',
+                      'emotion_sadness (%)': item.analysisReports.nluAnalysis !== undefined ? item.analysisReports.nluAnalysis.emotion.sadness : '',
+                      'emotion_joy (%)': item.analysisReports.nluAnalysis !== undefined ? item.analysisReports.nluAnalysis.emotion.joy : '',
+                      'emotion_fear (%)': item.analysisReports.nluAnalysis !== undefined ? item.analysisReports.nluAnalysis.emotion.fear : '',
+                      'emotion_disgust (%)': item.analysisReports.nluAnalysis !== undefined ? item.analysisReports.nluAnalysis.emotion.disgust : '',
+                      'emotion_anger (%)': item.analysisReports.nluAnalysis !== undefined ? item.analysisReports.nluAnalysis.emotion.anger : '',
+                      concepts: concepts,
+                      personality_summary: item.analysisReports.personality_Insights !== undefined ? item.analysisReports.personality_Insights.summary : '',
+                      'personality_opennness (%)': item.analysisReports.personality_Insights !== undefined ? item.analysisReports.personality_Insights.personality[0].percentile : '',
+                      'personality_conscientiousness (%)': item.analysisReports.personality_Insights !== undefined ? item.analysisReports.personality_Insights.personality[1].percentile : '',
+                      'personality_Agreeableness (%)': item.analysisReports.personality_Insights !== undefined ? item.analysisReports.personality_Insights.personality[3].percentile : '',
+                      'personality_emotional_range (%)': item.analysisReports.personality_Insights !== undefined ? item.analysisReports.personality_Insights.personality[4].percentile : '',
+                      'Client Supervisor Negative (%)': clientSupNeg !== undefined ? clientSupNeg.average_confidence : 0,
+                      'Client Supervisor Positive (%)': clientSupPos !== undefined ? clientSupPos.average_confidence : 0,
+                      'Task Mgmt Positive (%)': taskMgmtPos !== undefined ? taskMgmtPos.average_confidence : 0,
+                      'Task Mgmt Negative (%)': taskMgmtNeg !== undefined ? taskMgmtNeg.average_confidence : 0,
+                      'Team Mgmt Negative (%)': teamMgmtNeg !== undefined ? teamMgmtNeg.average_confidence : 0,
+                      'Team Mgmt Positive (%)': teamMgmtPos !== undefined ? teamMgmtPos.average_confidence : 0,
+                      'Self Mgmt Negative (%)': selfMgmtNeg !== undefined ? selfMgmtNeg.average_confidence : 0,
+                      'Self Mgmt Positive (%)': selfMgmtPos !== undefined ? selfMgmtPos.average_confidence : 0,
+                      'Communication Negative (%)': commNeg !== undefined ? commNeg.average_confidence : 0,
+                      'Communication Positive (%)': commPos !== undefined ? commPos.average_confidence : 0,
+                      'Learning Negative (%)': learnNeg !== undefined ? learnNeg.average_confidence : 0,
+                      'Learning Positive (%)': learnPos !== undefined ? learnPos.average_confidence : 0,
+                      'Overall Negative (%)': overNeg !== undefined ? overNeg.average_confidence : 0,
+                      'Overall Positive (%)': overPos !== undefined ? overPos.average_confidence : 0,
+                      'Emotions Negative (%)': emotionNeg !== undefined ? emotionNeg.average_confidence : 0,
+                      'Emotions Positive (%)': emotionPos !== undefined ? emotionPos.average_confidence : 0,
+                      'Organizer (%)': org !== undefined ? org.average_confidence : 0,
+                      'Doer (%)': doer !== undefined ? doer.average_confidence : 0,
+                      'Leader (%)': leader !== undefined ? leader.average_confidence : 0,
+                      'Supporter (%)': supporter !== undefined ? supporter.average_confidence : 0
+                    });
+                  }
                 })
               }
               documentData = temp || null;
