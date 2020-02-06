@@ -189,7 +189,7 @@ var getDocumentsData = function (userData, callback) {
                   let concepts = '';
                   for (let i = 0; i < item.analysisReports.nluAnalysis.concepts.length - 2; i++) {
                     concepts += item.analysisReports.nluAnalysis.concepts[i].text + ', ';
-                  } 
+                  }
                   concepts += item.analysisReports.nluAnalysis.concepts[item.analysisReports.nluAnalysis.concepts.length - 1].text;
                   let clientSupNeg = _.findWhere(item.analysisReports.classifiers, { class_name: 'Client Supervisor Negative' });
                   let clientSupPos = _.findWhere(item.analysisReports.classifiers, { class_name: 'Client Supervisor Positive' });
@@ -199,8 +199,8 @@ var getDocumentsData = function (userData, callback) {
                   let teamMgmtPos = _.findWhere(item.analysisReports.classifiers, { class_name: 'Team Mgmt Positive' });
                   let selfMgmtNeg = _.findWhere(item.analysisReports.classifiers, { class_name: 'Self Mgmt Negative' });
                   let selfMgmtPos = _.findWhere(item.analysisReports.classifiers, { class_name: 'Self Mgmt Positive' });
-                  let  commNeg = _.findWhere(item.analysisReports.classifiers, { class_name: 'Communication Negative' });
-                  let  commPos = _.findWhere(item.analysisReports.classifiers, { class_name: 'Communication Positive' });
+                  let commNeg = _.findWhere(item.analysisReports.classifiers, { class_name: 'Communication Negative' });
+                  let commPos = _.findWhere(item.analysisReports.classifiers, { class_name: 'Communication Positive' });
                   let learnNeg = _.findWhere(item.analysisReports.classifiers, { class_name: 'Learning Negative' });
                   let learnPos = _.findWhere(item.analysisReports.classifiers, { class_name: 'Learning Positive' });
                   let overNeg = _.findWhere(item.analysisReports.classifiers, { class_name: 'Overall Negative' });
@@ -246,7 +246,7 @@ var getDocumentsData = function (userData, callback) {
                     'Emotions Negative (%)': emotionNeg !== undefined ? emotionNeg.average_confidence : 0,
                     'Emotions Positive (%)': emotionPos !== undefined ? emotionPos.average_confidence : 0,
                     'Organizer (%)': org !== undefined ? org.average_confidence : 0,
-                    'Doer (%)' : doer !== undefined ? doer.average_confidence : 0,
+                    'Doer (%)': doer !== undefined ? doer.average_confidence : 0,
                     'Leader (%)': leader !== undefined ? leader.average_confidence : 0,
                     'Supporter (%)': supporter !== undefined ? supporter.average_confidence : 0
                   });
@@ -322,7 +322,7 @@ var getDocumentsDataByUserId = function (userData, payloadData, callback) {
                   let concepts = '';
                   for (let i = 0; i < item.analysisReports.nluAnalysis.concepts.length - 2; i++) {
                     concepts += item.analysisReports.nluAnalysis.concepts[i].text + ', ';
-                  } 
+                  }
                   concepts += item.analysisReports.nluAnalysis.concepts[item.analysisReports.nluAnalysis.concepts.length - 1].text;
                   let clientSupNeg = _.findWhere(item.analysisReports.classifiers, { class_name: 'Client Supervisor Negative' });
                   let clientSupPos = _.findWhere(item.analysisReports.classifiers, { class_name: 'Client Supervisor Positive' });
@@ -332,8 +332,8 @@ var getDocumentsDataByUserId = function (userData, payloadData, callback) {
                   let teamMgmtPos = _.findWhere(item.analysisReports.classifiers, { class_name: 'Team Mgmt Positive' });
                   let selfMgmtNeg = _.findWhere(item.analysisReports.classifiers, { class_name: 'Self Mgmt Negative' });
                   let selfMgmtPos = _.findWhere(item.analysisReports.classifiers, { class_name: 'Self Mgmt Positive' });
-                  let  commNeg = _.findWhere(item.analysisReports.classifiers, { class_name: 'Communication Negative' });
-                  let  commPos = _.findWhere(item.analysisReports.classifiers, { class_name: 'Communication Positive' });
+                  let commNeg = _.findWhere(item.analysisReports.classifiers, { class_name: 'Communication Negative' });
+                  let commPos = _.findWhere(item.analysisReports.classifiers, { class_name: 'Communication Positive' });
                   let learnNeg = _.findWhere(item.analysisReports.classifiers, { class_name: 'Learning Negative' });
                   let learnPos = _.findWhere(item.analysisReports.classifiers, { class_name: 'Learning Positive' });
                   let overNeg = _.findWhere(item.analysisReports.classifiers, { class_name: 'Overall Negative' });
@@ -379,7 +379,7 @@ var getDocumentsDataByUserId = function (userData, payloadData, callback) {
                     'Emotions Negative (%)': emotionNeg !== undefined ? emotionNeg.average_confidence : 0,
                     'Emotions Positive (%)': emotionPos !== undefined ? emotionPos.average_confidence : 0,
                     'Organizer (%)': org !== undefined ? org.average_confidence : 0,
-                    'Doer (%)' : doer !== undefined ? doer.average_confidence : 0,
+                    'Doer (%)': doer !== undefined ? doer.average_confidence : 0,
                     'Leader (%)': leader !== undefined ? leader.average_confidence : 0,
                     'Supporter (%)': supporter !== undefined ? supporter.average_confidence : 0
                   });
@@ -515,6 +515,7 @@ var deleteDocument = function (userData, payloadData, callback) {
 };
 
 var retryDocumentAnalysis = function (userData, payloadData, callback) {
+  let document;
   async.series(
     [
       function (cb) {
@@ -558,8 +559,10 @@ var retryDocumentAnalysis = function (userData, payloadData, callback) {
           } else {
             // if (data.length == 0) cb();
             // else {
-            if (data[0].isProcessed === "PROCESSED")
+            if (data[0].isProcessed === "PROCESSED") {
+              document = data[0];
               cb(ERROR.DOCUMENT_ALREADY_PROCESSED)
+            }
             // documentData = (data) || null;
             else cb();
             // }
@@ -584,12 +587,31 @@ var retryDocumentAnalysis = function (userData, payloadData, callback) {
         });
       },
       function (cb) {
+        var criteria = {
+          _id: payloadData.documentId,
+          userId: payloadData.userId
+        };
+        var projection = {
+        };
+        var options = { lean: true };
+        Service.DocumentService.getDocument(criteria, projection, options, (err, data) => {
+          if (err) cb(err);
+          else {
+            if (data !== undefined && data !== null && data.length > 0) {
+              document = data[0];
+            }
+            cb();
+          }
+        });
+      },
+      function (cb) {
         redisClient.hgetall(userData._id.toString(), function (err, obj) {
           if (obj && obj.socketId) {
             process.emit("refreshContent", {
-              socketId: obj.socketId
+              socketId: obj.socketId,
+              data: document
             });
-            cb()
+            cb();
           }
           else cb(err)
         })
@@ -730,32 +752,44 @@ var analyseDocument = function (documentData, userData) {
               isProcessed: "ERROR",
             };
             var options = { lean: true };
-            redisClient.hgetall(userData._id.toString(), function (err, obj) {
-              if (obj && obj.socketId) {
-                process.emit("refreshContentForError", {
-                  socketId: obj.socketId
-                });
-                // cb()
-              }
-              // else cb(err)
-            })
+            let document;
             Service.DocumentService.updateDocumentsList(criteria, dataToSet, options, function (error, data) {
               if (error) {
                 cb(error);
               } else {
-                cb(err);
+                Service.DocumentService.getDocument(criteria, {}, options, (error1, data) => {
+                  if (error1) {
+                    cb(error1);
+                  } else {
+                    if (data !== null && data !== undefined && data.length > 0) {
+                      document = data[0];
+                    }
+                    redisClient.hgetall(userData._id.toString(), function (err, obj) {
+                      if (obj && obj.socketId) {
+                        process.emit("refreshContentForError", {
+                          socketId: obj.socketId,
+                          data: document
+                        });
+                        // cb(err)
+                      }
+                      // else cb(err)
+                    })
+                    cb(err);
+                  }
+                });
               }
             });
+
           } else {
-            redisClient.hgetall(userData._id.toString(), function (err, obj) {
-              if (obj && obj.socketId) {
-                process.emit("refreshContent", {
-                  socketId: obj.socketId
-                });
-                // cb()
-              }
-              // else cb(err)
-            })
+            // redisClient.hgetall(userData._id.toString(), function (err, obj) {
+            //   if (obj && obj.socketId) {
+            //     process.emit("refreshContent", {
+            //       socketId: obj.socketId
+            //     });
+            //     // cb()
+            //   }
+            //   // else cb(err)
+            // })
             dataFromWatson = response.body;
             // console.log("-----------dataWatson----------", dataFromWatson);
             cb();
@@ -764,7 +798,7 @@ var analyseDocument = function (documentData, userData) {
       },
       function (cb) {
         var data = JSON.parse(dataFromWatson).data;
-        if (data.nLUAnalysis === undefined && data.personality_Insights === undefined && data.classifier_tags ===  undefined) {
+        if (data.nLUAnalysis === undefined && data.personality_Insights === undefined && data.classifier_tags === undefined) {
           obj = null;
         }
         if (data.nLUAnalysis !== undefined) {
@@ -849,8 +883,8 @@ var analyseDocument = function (documentData, userData) {
             warnings: personalityInsights.warnings
           }
         }
-        
-        if (data.classifier_tags !==  undefined) {
+
+        if (data.classifier_tags !== undefined) {
           obj.classifiers = data.classifier_tags
         }
         cb();
@@ -864,22 +898,34 @@ var analyseDocument = function (documentData, userData) {
           analysisReports: obj
         };
         var options = { lean: true };
-        redisClient.hgetall(userData._id.toString(), function (err, obj) {
-          if (obj && obj.socketId) {
-            process.emit("refreshContent", {
-              socketId: obj.socketId
-            });
-            // cb()
-          }
-          // else cb(err)
-        })
+        let document;
         Service.DocumentService.updateDocumentsList(criteria, dataToSet, options, function (err, data) {
           if (err) {
             cb(err);
           } else {
-            cb();
+            Service.DocumentService.getDocument(criteria, {}, options, (error1, data) => {
+              if (error1) {
+                cb(error1);
+              } else {
+                if (data !== null && data !== undefined && data.length > 0) {
+                  document = data[0];
+                }
+                redisClient.hgetall(userData._id.toString(), function (err, obj) {
+                  if (obj && obj.socketId) {
+                    process.emit("refreshContent", {
+                      socketId: obj.socketId,
+                      data: document
+                    });
+                    // cb(err)
+                  }
+                  // else cb(err)
+                })
+                cb();
+              }
+            });
           }
         });
+
       }
     ],
     function (err, result) {
