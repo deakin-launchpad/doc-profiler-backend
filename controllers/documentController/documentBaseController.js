@@ -662,7 +662,7 @@ var analyseDocument = function (documentData, userData) {
         var type = url.substring(url.lastIndexOf('.') + 1);
 
         var params = {
-          Bucket: "doc-profiler-bucket",
+          Bucket: CONFIG.AWS_S3_CONFIG.s3BucketCredentials.bucket,
           Key: fileName
         }
         if (type === "docx") {
